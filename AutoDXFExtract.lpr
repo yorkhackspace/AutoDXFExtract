@@ -62,9 +62,10 @@ var
   groupType: string;
   justName: string;
   pathToInput: string;
+  scale: string;
 begin
   // quick check parameters
-  ErrorMsg:=CheckOptions('hiop',['help','input','output','path']);
+  ErrorMsg:=CheckOptions('hiops',['help','input','output','path', 'scale']);
   if ErrorMsg<>'' then begin
     ShowException(Exception.Create(ErrorMsg));
     Terminate;
@@ -158,8 +159,13 @@ begin
     i := i+1;
   end until done;
 
+  scale := '1';
+  if HasOption('s','scale') then begin
+    scale:=GetOptionValue('s','scale');
+  end;
+
   Writeln(outFile, '%.dxf: %.eps' +#10 +
-	#9+'pstoedit -dt -f dxf:-polyaslines $< $@' +#10+#10);
+	#9+'pstoedit -xscale ' + scale + ' -yscale ' + scale + ' -dt -f dxf:-polyaslines $< $@' +#10+#10);
 
   Writeln(outFile, 'all: ' + allnames);
 
